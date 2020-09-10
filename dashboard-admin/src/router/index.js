@@ -98,6 +98,16 @@ export const asyncRouterMap = [
           title: '工作流管理',
           noCache: true
         }
+      },
+      {
+        path: 'data',
+        component: () => import('@/views/nova/data'),
+        name: 'data',
+        meta: {
+          perms: ['GET /admin/nova/list'],
+          title: '数据管理',
+          noCache: true
+        }
       }
     ]
   },
