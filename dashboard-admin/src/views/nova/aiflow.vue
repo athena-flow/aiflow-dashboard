@@ -1,92 +1,82 @@
 <template>
-  <div class="app-container">
-    <div id="dataapp">
-      <div id="xfc"></div>
-    </div>
+  <div id="app">
+    <el-button size="small" style="float:right;margin-top:6px;margin-right:6px;" @click="()=>{this.$refs['wfd'].graph.saveXML()}">导出XML</el-button>
+    <el-button size="small" style="float:right;margin-top:6px;margin-right:6px;" @click="()=>{this.$refs['wfd'].graph.saveImg()}">导出图片</el-button>
+    <el-button size="small" style="float:right;margin-top:6px;margin-right:6px;" @click="()=>{this.modalVisible=true}">查看流程图</el-button>
+    <wfd-vue ref="wfd" :data="demoData" :height="600" :users="candidateUsers" :groups="candidateGroups" :categorys="categorys" :lang="lang" />
+    <el-dialog title="查看流程图" :visible.sync="modalVisible" width="60%">
+        <wfd-vue ref="wfd" :data="demoData1" :height="300" isView />
+    </el-dialog>
   </div>
 </template>
 
-<style lang="less">
-  #dataapp {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-  }
-
-  #nav {
-    padding: 30px;
-
-    a {
-      font-weight: bold;
-      color: #2c3e50;
-
-      &.router-link-exact-active {
-        color: #42b983;
-      }
-    }
-  }
-</style>
-
-<style lang="less">
-  #dataapp {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-  }
-
-  #nav {
-    padding: 30px;
-
-    a {
-      font-weight: bold;
-      color: #2c3e50;
-
-      &.router-link-exact-active {
-        color: #42b983;
-      }
-    }
-  }
-</style>
-
 <script>
-import xfc from '@oxoyo/xfc'
-import '@oxoyo/xfc/dist/xfc.css'
-
+import WfdVue from '@/components/Wfd'
 export default {
-  name: 'dataapp',
-  mounted () {
-    const system = {
-      version: '1.0.0',
-      name: 'xfcDemo',
-      author: 'OXOYO',
-      description: 'xfcDemo',
-      title: 'xfcDemo',
-      logo: require('@/assets/images/logo.png'),
-      github: 'https://github.com/OXOYO/X-Flowchart-Vue',
-      githubPages: 'http://oxoyo.co/X-Flowchart-Vue/',
-      feedback: 'https://github.com/OXOYO/X-Flowchart-Vue/issues/new',
-      copyright: '©2019 - 2020 OXOYO All Rights Reserved.'
+  name: 'aiflow',
+  components:{
+    WfdVue
+  },
+  data () {
+    return {
+      modalVisible:false,
+      lang: "zh",
+      demoData: {
+        nodes: [{ id: 'startNode1', x: 50, y: 200, label: '', clazz: 'start', },
+          { id: 'startNode2', x: 50, y: 320, label: '', clazz: 'timerStart', },
+          { id: 'taskNode1', x: 200, y: 200, label: '主任审批', clazz: 'userTask',  },
+          { id: 'taskNode2', x: 400, y: 200, label: '经理审批', clazz: 'scriptTask',  },
+          { id: 'gatewayNode', x: 400, y: 320, label: '金额大于1000', clazz: 'inclusiveGateway',  },
+          { id: 'taskNode3', x: 400, y: 450, label: '董事长审批', clazz: 'receiveTask', },
+          { id: 'catchNode1', x: 600, y: 200, label: '等待结束', clazz: 'signalCatch', },
+          { id: 'endNode', x: 600, y: 320, label: '', clazz: 'end', }],
+        edges: [{ source: 'startNode1', target: 'taskNode1', sourceAnchor:1, targetAnchor:3, clazz: 'flow' },
+          { source: 'startNode2', target: 'gatewayNode', sourceAnchor:1, targetAnchor:3, clazz: 'flow' },
+          { source: 'taskNode1', target: 'catchNode1', sourceAnchor:0, targetAnchor:0, clazz: 'flow' },
+          { source: 'taskNode1', target: 'taskNode2', sourceAnchor:1, targetAnchor:3, clazz: 'flow' },
+          { source: 'taskNode2', target: 'gatewayNode', sourceAnchor:1, targetAnchor:0, clazz: 'flow' },
+          { source: 'taskNode2', target: 'taskNode1', sourceAnchor:2, targetAnchor:2, clazz: 'flow' },
+          { source: 'gatewayNode', target: 'taskNode3', sourceAnchor:2, targetAnchor:0, clazz: 'flow' },
+          { source: 'gatewayNode', target: 'endNode', sourceAnchor:1, targetAnchor:2, clazz: 'flow'},
+          { source: 'taskNode3', target: 'endNode', sourceAnchor:1, targetAnchor:1, clazz: 'flow' },
+          { source: 'catchNode1', target: 'endNode', sourceAnchor:1, targetAnchor:0, clazz: 'flow' }]
+      },
+      demoData1:{
+        nodes: [{ id: 'startNode1', x: 50, y: 200, label: '', clazz: 'start', },
+          { id: 'startNode2', x: 50, y: 320, label: '', clazz: 'timerStart', },
+          { id: 'taskNode1', x: 200, y: 200, label: '主任审批', clazz: 'userTask',  },
+          { id: 'taskNode2', x: 400, y: 200, label: '经理审批', clazz: 'scriptTask', active:true },
+          { id: 'gatewayNode', x: 400, y: 320, label: '金额大于1000', clazz: 'gateway',  },
+          { id: 'taskNode3', x: 400, y: 450, label: '董事长审批', clazz: 'receiveTask', },
+          { id: 'catchNode1', x: 600, y: 200, label: '等待结束', clazz: 'signalCatch', },
+          { id: 'endNode', x: 600, y: 320, label: '', clazz: 'end', }],
+        edges: [{ source: 'startNode1', target: 'taskNode1', sourceAnchor:1, targetAnchor:3, clazz: 'flow' },
+          { source: 'startNode2', target: 'gatewayNode', sourceAnchor:1, targetAnchor:3, clazz: 'flow' },
+          { source: 'taskNode1', target: 'catchNode1', sourceAnchor:0, targetAnchor:0, clazz: 'flow' },
+          { source: 'taskNode1', target: 'taskNode2', sourceAnchor:1, targetAnchor:3, clazz: 'flow' },
+          { source: 'taskNode2', target: 'gatewayNode', sourceAnchor:1, targetAnchor:0, clazz: 'flow' },
+          { source: 'taskNode2', target: 'taskNode1', sourceAnchor:2, targetAnchor:2, clazz: 'flow' },
+          { source: 'gatewayNode', target: 'taskNode3', sourceAnchor:2, targetAnchor:0, clazz: 'flow' },
+          { source: 'gatewayNode', target: 'endNode', sourceAnchor:1, targetAnchor:2, clazz: 'flow'},
+          { source: 'taskNode3', target: 'endNode', sourceAnchor:1, targetAnchor:1, clazz: 'flow' },
+          { source: 'catchNode1', target: 'endNode', sourceAnchor:1, targetAnchor:0, clazz: 'flow' }]
+      },
+      candidateUsers: [{id:'1',name:'Tom'},{id:'2',name:'Steven'},{id:'3',name:'Andy'}],
+      candidateGroups: [{id:'1',name:'Manager'},{id:'2',name:'Security'},{id:'3',name:'OA'}],
+      categorys: [{id:'1',name:'Common'},{id:'2',name:'Subsidy'},{id:'3',name:'Maintain'}],
     }
-
-    // 初始化
-    const xfcEditor = xfc({
-      el: '#xfc',
-      props: {
-        system
-      }
-    })
-    console.log('xfcEditor', xfcEditor)
-    xfcEditor.$nextTick(() => {
-      // FIXME API调用示例
-      // 初始化数据
-      xfcEditor.read({"nodes":[{"id":"g2","draggable":true,"type":"hexagon","label":"","labelCfg":{"position":"center","style":{"fontSize":16,"stroke":"#000000"}},"width":80,"height":40,"minWidth":20,"minHeight":20,"anchorPoints":[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]],"shapeControl":{"controllers":[[0,0,"nwse-resize"],[0,0.5,"ew-resize"],[0,1,"nesw-resize"],[0.5,0,"ns-resize"],[0.5,1,"ns-resize"],[1,0,"nesw-resize"],[1,0.5,"ew-resize"],[1,1,"nwse-resize"]],"rotate":true},"name":"XFC_NODE_Hexagon","x":279,"y":99,"size":[80,40],"style":{"fill":"#FFFFFF","fillOpacity":1,"stroke":"#000000","strokeOpacity":1,"lineWidth":1,"lineDash":[]},"groupId":""},{"id":"g4","draggable":true,"type":"circle","label":"","labelCfg":{"position":"center","style":{"fontSize":16,"stroke":"#000000"}},"width":80,"height":80,"minWidth":20,"minHeight":20,"anchorPoints":[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]],"shapeControl":{"controllers":[[0,0,"nwse-resize"],[0,0.5,"ew-resize"],[0,1,"nesw-resize"],[0.5,0,"ns-resize"],[0.5,1,"ns-resize"],[1,0,"nesw-resize"],[1,0.5,"ew-resize"],[1,1,"nwse-resize"]],"rotate":true},"name":"XFC_NODE_Circle","x":462,"y":92,"size":[80,80],"style":{"fill":"#FFFFFF","fillOpacity":1,"stroke":"#000000","strokeOpacity":1,"lineWidth":1,"lineDash":[]},"groupId":""}],"edges":[{"id":"g5","source":"g2","sourceAnchor":7,"target":"g4","label":"","labelCfg":{"position":"center","style":{"autoRotate":true,"fontSize":16,"stroke":"#000000"}},"attrs":{"start":"g2","end":"g4"},"style":{"lineAppendWidth":10,"stroke":"#000000","lineWidth":1,"strokeOpacity":1,"lineDash":[],"endArrow":{"path":"M0,0 L20,-10 L20,10 Z","d":0,"fill":"#000000","stroke":"#000000"}},"type":"x-line","startArrow":false,"endArrow":false,"startPoint":{"x":319.70710678118655,"y":99,"index":7},"endPoint":{"x":421.5,"y":92,"index":15},"targetAnchor":15}],"combos":[],"groups":[]})
-      // 保存图片
-      // xfcEditor.downloadImage()
-    })
+  },
+  mounted() {
   }
 }
 </script>
+
+<style>
+#app {
+  /*font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;*/
+}
+</style>

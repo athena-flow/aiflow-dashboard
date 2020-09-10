@@ -6,6 +6,7 @@ https://github.com/OXOYO/X-Flowchart-Vue
 https://github.com/guozhaolong/wfd-vue/
 
 cnpm i @oxoyo/xfc --save
+cnpm i wfd-vue --save
 
 npm search wfd
 NAME                      | DESCRIPTION          | AUTHOR          | DATE       | VERSION  | KEYWORDS
