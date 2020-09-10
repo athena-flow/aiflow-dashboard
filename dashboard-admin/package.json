@@ -61,7 +61,12 @@
     "vue-count-to": "1.0.13",
     "vue-router": "3.0.2",
     "vuex": "3.1.0",
-    "xlsx": "0.14.1"
+    "xlsx": "0.14.1",
+    "@antv/dom-util": "2.0.2",
+    "@antv/matrix-util": "2.0.7",
+    "@antv/g-canvas": "^0.4.12",
+    "@antv/g6": "3.5.2",
+    "@antv/util": "~2.0.9"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",
